@@ -1,0 +1,39 @@
+Algorithm Steps:
+Initialize Files:
+
+Open input.txt for reading the source program.
+Open optab.txt for reading the operation table.
+Open symtab.txt for writing the symbol table.
+Open output.txt for writing the intermediate output.
+Open length.txt for writing the program length.
+Read First Line:
+
+Read the first line of the source file into label, opcode, and operand.
+If START is Found:
+
+If opcode is "START":
+Set start = atoi(operand).
+Set locctr = start.
+Write the first line to the output file and display the starting location.
+Loop Through the Source File:
+
+While opcode is not "END":
+Print locctr and locdisp.
+If a label is present, write it to the symbol table along with locctr.
+Search optab.txt for the opcode:
+If found, increment locctr by 3 (assuming the instruction is 3 bytes).
+If opcode is "WORD", increment locctr by 3.
+If opcode is "RESW", increment locctr by 3 * (atoi(operand)).
+If opcode is "RESB", increment locctr by atoi(operand).
+If opcode is "BYTE", increment locctr by 1.
+Write the current line to output.txt and display it.
+Read the next line from the input file.
+When END is Encountered:
+
+Write the final line (with END) to the output file.
+Compute length = locctr - start.
+Write the program length to length.txt and display the result.
+Close Files:
+
+Close all opened files.
+Example Flow:
