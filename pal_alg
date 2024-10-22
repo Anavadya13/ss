@@ -1,0 +1,58 @@
+Initialization:
+
+MOV AX, DATA: Load the data segment into AX.
+MOV DS, AX: Transfer the data segment address into DS.
+LEA DX, MSG1: Load the address of the prompt message into DX.
+MOV AH, 09H: Set up interrupt to display string (DOS interrupt 09H).
+INT 21H: Call DOS interrupt to print the prompt message.
+Input Handling:
+
+LEA SI, STR1: Load the address of STR1 into SI (starting point of the string).
+LEA DI, STR1: Load the address of STR1 into DI (we will also use this for writing characters).
+Loop to read each character:
+MOV AH, 01H: Set up for input (DOS interrupt 01H).
+INT 21H: Get a single character from the user.
+CMP AL, 0DH: Check if the character is Enter (carriage return, 0DH).
+JE TERMINATE: If Enter is pressed, jump to the termination step.
+MOV [DI], AL: Store the input character at the location pointed to by DI.
+INC DI: Move to the next position in the string buffer.
+JMP NEXT: Loop to read the next character.
+String Termination:
+
+MOV AL, "$": Store the $ terminator after the last character of the string.
+MOV [DI], AL: Set the end of the string with $.
+Palindrome Check:
+
+DEC DI: Move DI back to the last valid character (ignoring the $ terminator).
+Loop to compare the characters from the start and end of the string:
+MOV AL, [SI]: Load the character at the start of the string (pointed by SI) into AL.
+CMP [DI], AL: Compare the character at the start (AL) with the character at the end (pointed by DI).
+JNE NOTPALINDROME: If they don't match, jump to the not palindrome section.
+INC SI: Move SI forward to the next character.
+CMP SI, DI: Check if SI has reached or passed DI.
+JL DOTHIS: If SI is still less than DI, continue comparing.
+Palindrome Result:
+
+If all comparisons match:
+PALINDROME label:
+MOV AH, 09H: Set up to print the "It is a palindrome" message.
+LEA DX, MSG2: Load the message into DX.
+INT 21H: Call DOS interrupt to print the message.
+Jump to program exit (XX label).
+Not Palindrome Result:
+
+If any comparison fails:
+NOTPALINDROME label:
+MOV AH, 09H: Set up to print the "It is not a palindrome" message.
+LEA DX, MSG3: Load the message into DX.
+INT 21H: Call DOS interrupt to print the message.
+Jump to program exit (XX label).
+Exit:
+
+MOV AH, 4CH: Set up for program termination (DOS interrupt 4CH).
+INT 21H: Exit the program.
+Summary of Key Operations
+Input handling: Reads a string character by character until Enter is pressed.
+Palindrome check: Compares characters from the start and the end of the string, moving towards the center.
+Output: Displays whether the string is a palindrome or not.
+Exit: Terminates the program.
