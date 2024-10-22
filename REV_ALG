@@ -1,0 +1,62 @@
+Initialization:
+
+MOV AX, DATA: Load the address of the data segment into AX.
+MOV DS, AX: Set the data segment register (DS) with the address from AX.
+LEA DX, MSG1: Load the address of the string "Enter a string: $" into DX.
+MOV AH, 09H: Set up DOS interrupt for printing the string (function 09H).
+INT 21H: Call DOS interrupt to display the string prompt.
+Input Handling:
+
+LEA SI, STR1: Load the address of STR1 into SI (to track the start of the string).
+LEA DI, STR1: Load the address of STR1 into DI (for writing input characters).
+Loop to read input:
+MOV AH, 01H: Set up for input (DOS interrupt 01H to read a single character).
+INT 21H: Read a character and store it in AL.
+CMP AL, 0DH: Check if the character is Enter (carriage return, 0DH).
+JE TERMINATE: If Enter is pressed, jump to the termination section.
+MOV [DI], AL: Store the input character at the location pointed to by DI.
+INC DI: Move to the next position in the buffer to store the next character.
+JMP NEXT: Repeat to read the next character.
+String Termination:
+
+After the user presses Enter:
+Append the characters to indicate the end of the string:
+MOV AL, "'": Add a single quote at the end.
+MOV [DI], AL: Store it in the string.
+INC DI: Move the pointer to the next position.
+MOV AL, ".": Add a period.
+MOV [DI], AL: Store it in the string.
+INC DI: Move the pointer.
+MOV AL, "$": Add a $ to mark the end of the string for display purposes.
+MOV [DI], AL: Store it.
+DEC DI: Move DI back to the last valid character (ignoring '."$).
+String Reversal:
+
+Set up two pointers:
+SI starts from the first character of the string.
+DI points to the last valid character of the string.
+Loop to swap characters between the start and end:
+MOV AL, [SI]: Load the character at SI (the start) into AL.
+XCHG AL, [DI]: Swap the character in AL (from the start) with the character at DI (the end).
+XCHG AL, [SI]: Swap the AL character back into SI to complete the swap.
+INC SI: Move SI forward.
+DEC DI: Move DI backward.
+CMP SI, DI: Compare if the two pointers have met or crossed.
+JL DOTHIS: If SI is less than DI, continue the swapping process.
+Display Reversed String:
+
+LEA DX, MSG2: Load the address of the message "The reversed string is '$" into DX.
+MOV AH, 09H: Set up DOS interrupt to print the message.
+INT 21H: Call DOS interrupt to print the message.
+LEA DX, STR1: Load the address of the reversed string (STR1) into DX.
+MOV AH, 09H: Set up DOS interrupt to print the reversed string.
+INT 21H: Call DOS interrupt to display the reversed string.
+Exit:
+
+MOV AH, 4CH: Set up for program termination (DOS interrupt 4CH).
+INT 21H: Exit the program.
+Summary of Key Operations
+Input handling: Reads a string character by character until Enter is pressed.
+String reversal: Swaps characters from the start and the end of the string, moving towards the center.
+Output: Displays the reversed string.
+Exit: Terminates the program.
